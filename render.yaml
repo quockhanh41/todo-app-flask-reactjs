@@ -19,7 +19,6 @@ services:
     name: todo-frontend
     env: static
     plan: free # Static sites are always free on Render
-    region: singapore
     rootDir: frontend
     buildCommand: "npm install && npm run build"
     staticPublishPath: "./dist" # Vite outputs to the 'dist' folder
