@@ -18,5 +18,5 @@ ENV FLASK_APP=application.py \
 
 EXPOSE 5000
 
-CMD sh -c "flask db upgrade && gunicorn --bind 0.0.0.0:${PORT:-5000} application:app"
+CMD ["flask", "run"]
 
