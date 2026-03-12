@@ -20,8 +20,15 @@ class Config(object):
 
 
 class DevelopmentConfig(Config):
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "data.db")
+    # Ưu tiên dùng DATABASE_URL (PostgreSQL), fallback về SQLite cũ nếu chưa cấu hình
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL", "sqlite:///" + os.path.join(basedir, "data.db")
+    )
 
 
 class TestConfig(Config):
-    pass
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "TEST_DATABASE_URL",
+        os.getenv("DATABASE_URL", "sqlite:///:memory:"),
+    )

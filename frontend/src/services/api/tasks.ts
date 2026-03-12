@@ -1,19 +1,16 @@
 import { TCreateFormSchema, TEditFormSchema } from "@/schemas/task-schema";
 import { useAuthStore } from "@/stores/auth-store";
 import { Task } from "@/types/types";
-import axios from "axios";
+import { apiClient } from "./client";
 
 export const getTasksOnUserAPI = async () => {
   const token = useAuthStore.getState().token;
 
-  const response = await axios.get<Task[]>(
-    "http://localhost:5000/api/v1/tasks/user",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  const response = await apiClient.get<Task[]>("/tasks/user", {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 
   return response.data;
 };
@@ -24,7 +21,7 @@ export const createTaskAPI = async (data: {
 }) => {
   const { formData, token } = data;
 
-  await axios.post("http://localhost:5000/api/v1/tasks", formData, {
+  await apiClient.post("/tasks", formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -38,7 +35,7 @@ export const updateTaskAPI = async (data: {
 }) => {
   const { formData, token, taskId } = data;
 
-  await axios.put(`http://localhost:5000/api/v1/tasks/${taskId}`, formData, {
+  await apiClient.put(`/tasks/${taskId}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -51,7 +48,7 @@ export const deleteTaskAPI = async (data: {
 }) => {
   const { token, taskId } = data;
 
-  await axios.delete(`http://localhost:5000/api/v1/tasks/${taskId}`, {
+  await apiClient.delete(`/tasks/${taskId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
