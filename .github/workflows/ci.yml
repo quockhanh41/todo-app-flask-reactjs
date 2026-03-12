@@ -27,7 +27,7 @@ jobs:
       - name: Run pytest
         env:
           # Dùng SQLite in-memory cho test, không đụng tới Neon/Render
-          DATABASE_URL: sqlite:///:memory:
+          DATABASE_URL: "sqlite:///:memory:"
           PYTHONPATH: .
         run: pytest -q
 
