@@ -59,6 +59,7 @@ def test_sign_in_and_task_crud_flow(app, client):
                 "title": "My Task",
                 "content": "Some content",
                 "status": "PENDING",
+                "priority": "MEDIUM",
                 "tagId": tag.id,
             },
             headers=headers,

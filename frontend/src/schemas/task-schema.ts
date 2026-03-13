@@ -11,6 +11,10 @@ const FormSchema = z.object({
     .max(600, { message: "Max length is 600 characters" }),
   status: z.string().min(1, { message: "Status is required" }),
   tagId: z.string().min(1, { message: "Tag is required" }),
+  deadline: z.string().optional().nullable(),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH"], {
+    required_error: "Priority is required",
+  }),
 });
 
 export const CreateFormSchema = FormSchema;

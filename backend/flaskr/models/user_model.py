@@ -18,3 +18,6 @@ class UserModel(db.Model):
     tasks = relationship(
         "TaskModel", back_populates="user", cascade="all, delete-orphan"
     )
+    notifications = relationship(
+        "NotificationModel", back_populates="user", cascade="all, delete-orphan"
+    )

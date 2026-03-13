@@ -28,9 +28,10 @@ import { useUpdateTaskMutation } from "@/services/mutations/tasks";
 
 interface IProps {
   task: Task;
+  onSuccess?: () => void;
 }
 
-export const EditForm = ({ task }: IProps) => {
+export const EditForm = ({ task, onSuccess }: IProps) => {
   const mutation = useUpdateTaskMutation();
   const { token } = useAuthStore();
   const allStatus: { value: string; name: string }[] = [
@@ -43,12 +44,21 @@ export const EditForm = ({ task }: IProps) => {
     "TaskStatus.IN_PROGRESS": "IN_PROGRESS",
     "TaskStatus.COMPLETED": "COMPLETED",
   };
+  const currentPriority: Record<Task["priority"], "LOW" | "MEDIUM" | "HIGH"> = {
+    "TaskPriority.LOW": "LOW",
+    "TaskPriority.MEDIUM": "MEDIUM",
+    "TaskPriority.HIGH": "HIGH",
+  };
   const form = useForm<TEditFormSchema>({
     resolver: zodResolver(EditFormSchema),
     defaultValues: {
       title: task.title,
       content: task.content,
       status: currentStatus[task.status],
+      priority: currentPriority[task.priority],
+      deadline: task.deadline
+        ? new Date(task.deadline).toISOString().slice(0, 16)
+        : undefined,
     },
   });
 
@@ -62,6 +72,7 @@ export const EditForm = ({ task }: IProps) => {
     await mutation.mutateAsync({ taskId: task.id, token, formData });
 
     toast.success("Task successfully updated");
+    onSuccess?.();
   };
 
   return (
@@ -132,6 +143,56 @@ export const EditForm = ({ task }: IProps) => {
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="priority"
+          render={({ field }) => (
+            <FormItem className="space-y-1">
+              <FormLabel>Priority</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                disabled={isSubmitting}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a priority..." />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem className="md:cursor-pointer" value="LOW">
+                    Low
+                  </SelectItem>
+                  <SelectItem className="md:cursor-pointer" value="MEDIUM">
+                    Medium
+                  </SelectItem>
+                  <SelectItem className="md:cursor-pointer" value="HIGH">
+                    High
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="deadline"
+          render={({ field }) => (
+            <FormItem className="space-y-1">
+              <FormLabel>Deadline</FormLabel>
+              <FormControl>
+                <Input
+                  type="datetime-local"
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  disabled={isSubmitting}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

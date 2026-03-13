@@ -1,5 +1,7 @@
 from marshmallow import fields
 from flaskr.schemas.plain_schema import (
+    PlainNotificationListSchema,
+    PlainNotificationSchema,
     PlainSignInSchema,
     PlainTagSchema,
     PlainTaskSchema,
@@ -25,4 +27,12 @@ class TaskSchema(PlainTaskSchema):
 
 
 class UpdateTaskSchema(PlainTaskSchema):
+    pass
+
+
+class NotificationSchema(PlainNotificationSchema):
+    pass
+
+
+class NotificationListSchema(PlainNotificationListSchema):
     pass

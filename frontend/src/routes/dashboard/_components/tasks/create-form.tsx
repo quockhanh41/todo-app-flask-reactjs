@@ -26,13 +26,24 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/stores/auth-store";
 import { useCreateTaskMutation } from "@/services/mutations/tasks";
 
-export const CreateForm = () => {
+interface IProps {
+  onSuccess?: () => void;
+}
+
+export const CreateForm = ({ onSuccess }: IProps) => {
   const { data: tags = [] } = useGetTagsQuery();
   const { token } = useAuthStore();
   const mutation = useCreateTaskMutation();
   const form = useForm<TCreateFormSchema>({
     resolver: zodResolver(CreateFormSchema),
-    defaultValues: { title: "", content: "", tagId: "", status: "" },
+    defaultValues: {
+      title: "",
+      content: "",
+      tagId: "",
+      status: "",
+      deadline: undefined,
+      priority: "MEDIUM",
+    },
   });
 
   const {
@@ -48,6 +59,7 @@ export const CreateForm = () => {
     toast.success("Task successfully created");
 
     reset();
+    onSuccess?.();
   };
 
   return (
@@ -158,7 +170,57 @@ export const CreateForm = () => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="priority"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel>Priority</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={isSubmitting}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a priority..." />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem className="md:cursor-pointer" value="LOW">
+                      Low
+                    </SelectItem>
+                    <SelectItem className="md:cursor-pointer" value="MEDIUM">
+                      Medium
+                    </SelectItem>
+                    <SelectItem className="md:cursor-pointer" value="HIGH">
+                      High
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
+        <FormField
+          control={form.control}
+          name="deadline"
+          render={({ field }) => (
+            <FormItem className="space-y-1">
+              <FormLabel>Deadline</FormLabel>
+              <FormControl>
+                <Input
+                  type="datetime-local"
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  disabled={isSubmitting}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <DialogFooter>
           <Button className="font-medium" type="submit" disabled={isSubmitting}>
             {isSubmitting ? (

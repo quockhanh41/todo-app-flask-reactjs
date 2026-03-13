@@ -6,6 +6,7 @@ from flaskr.extensions import migrate, api, cors, jwt
 from flaskr.db import db
 
 from flaskr.routes.auth_route import bp as auth_route
+from flaskr.routes.notification_route import bp as notification_route
 from flaskr.routes.user_route import bp as user_route
 from flaskr.routes.tag_route import bp as tag_route
 from flaskr.routes.task_route import bp as task_route
@@ -29,5 +30,6 @@ def create_app(test_config=None):
     api.register_blueprint(user_route, url_prefix="/api/v1")
     api.register_blueprint(tag_route, url_prefix="/api/v1")
     api.register_blueprint(task_route, url_prefix="/api/v1")
+    api.register_blueprint(notification_route, url_prefix="/api/v1")
 
     return app

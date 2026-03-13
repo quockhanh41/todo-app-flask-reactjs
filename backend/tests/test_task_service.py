@@ -1,5 +1,5 @@
 from flaskr.db import db
-from flaskr.models.task_model import TaskModel, TaskStatus
+from flaskr.models.task_model import TaskModel, TaskStatus, TaskPriority
 from flaskr.models.tag_model import TagModel
 from flaskr.models.user_model import UserModel
 from flaskr.services.task_service import (
@@ -28,6 +28,7 @@ def _create_task(user_id: int, tag_id: int, title: str = "Task", status=TaskStat
         title=title,
         content="content",
         status=status,
+        priority=TaskPriority.MEDIUM,
         user_id=user_id,
         tag_id=tag_id,
     )
@@ -64,6 +65,7 @@ def test_update_task_forbidden_for_other_user(app):
             "title": "updated",
             "content": "updated content",
             "status": TaskStatus.IN_PROGRESS,
+            "priority": "HIGH",
         }
 
         try:

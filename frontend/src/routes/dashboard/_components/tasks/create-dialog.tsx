@@ -7,11 +7,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
 import { CreateForm } from "./create-form";
 
 export const CreateDialog = () => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="font-medium" size="sm">
           Create a new task
@@ -25,7 +28,7 @@ export const CreateDialog = () => {
             details to manage your to-dos effortlessly.
           </DialogDescription>
         </DialogHeader>
-        <CreateForm />
+          <CreateForm onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );

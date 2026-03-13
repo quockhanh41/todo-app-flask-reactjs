@@ -13,15 +13,25 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { useDeleteTaskMutation } from "@/services/mutations/tasks";
 import { useAuthStore } from "@/stores/auth-store";
 import { Trash } from "lucide-react";
+import { ReactNode } from "react";
 import { toast } from "sonner";
 
 interface IProps {
   taskId: number;
+  trigger?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export const DeleteDialog = ({ taskId }: IProps) => {
+export const DeleteDialog = ({
+  taskId,
+  trigger,
+  open,
+  onOpenChange,
+}: IProps) => {
   const mutation = useDeleteTaskMutation();
   const { token } = useAuthStore();
+  const shouldRenderTrigger = trigger !== undefined || open === undefined;
 
   const handleDelete = async () => {
     await mutation.mutateAsync({ token, taskId });
@@ -30,13 +40,17 @@ export const DeleteDialog = ({ taskId }: IProps) => {
   };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive" className="font-medium" size="sm">
-          Delete
-          <Trash />
-        </Button>
-      </AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      {shouldRenderTrigger && (
+        <AlertDialogTrigger asChild>
+          {trigger ?? (
+            <Button variant="destructive" className="font-medium" size="sm">
+              Delete
+              <Trash />
+            </Button>
+          )}
+        </AlertDialogTrigger>
+      )}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-base">

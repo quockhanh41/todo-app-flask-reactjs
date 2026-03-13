@@ -8,6 +8,7 @@ export const useCreateTaskMutation = () => {
     mutationFn: createTaskAPI,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 };
@@ -19,6 +20,7 @@ export const useUpdateTaskMutation = () => {
     mutationFn: updateTaskAPI,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 };
@@ -30,6 +32,7 @@ export const useDeleteTaskMutation = () => {
     mutationFn: deleteTaskAPI,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 };

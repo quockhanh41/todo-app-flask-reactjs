@@ -51,6 +51,10 @@ class TaskService:
             task.title = data["title"]
             task.content = data["content"]
             task.status = data["status"]
+            # deadline is optional, may be missing or null
+            if "deadline" in data:
+                task.deadline = data["deadline"]
+            task.priority = data["priority"]
 
             TaskRepository.add(session, task)
             session.commit()

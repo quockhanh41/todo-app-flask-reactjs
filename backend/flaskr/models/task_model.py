@@ -1,5 +1,7 @@
 from enum import Enum
-from sqlalchemy import ForeignKey, String, Enum as SaEnum
+from typing import Optional
+
+from sqlalchemy import ForeignKey, String, Enum as SaEnum, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from flaskr.db import db
 from datetime import datetime, timezone
@@ -9,6 +11,12 @@ class TaskStatus(Enum):
     PENDING = "PENDING"
     IN_PROGRESS = "IN_PROGRESS"
     COMPLETED = "COMPLETED"
+
+
+class TaskPriority(Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
 
 
 class TaskModel(db.Model):
@@ -23,9 +31,18 @@ class TaskModel(db.Model):
     created_at: Mapped[datetime] = mapped_column(
         index=True, default=lambda: datetime.now(timezone.utc)
     )
+    deadline: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True, index=True
+    )
+    priority: Mapped[TaskPriority] = mapped_column(
+        SaEnum(TaskPriority), nullable=False, default=TaskPriority.MEDIUM
+    )
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     user = relationship("UserModel", back_populates="tasks")
+    notifications = relationship(
+        "NotificationModel", back_populates="task", cascade="all, delete-orphan"
+    )
 
     tag_id: Mapped[int] = mapped_column(ForeignKey("tags.id"), nullable=False)
     tag = relationship("TagModel", back_populates="tasks")

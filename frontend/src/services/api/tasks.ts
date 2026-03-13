@@ -21,7 +21,13 @@ export const createTaskAPI = async (data: {
 }) => {
   const { formData, token } = data;
 
-  await apiClient.post("/tasks", formData, {
+  // Convert optional deadline from local datetime-local string to ISO (UTC) if present
+  const payload = {
+    ...formData,
+    deadline: formData.deadline ? new Date(formData.deadline).toISOString() : null,
+  };
+
+  await apiClient.post("/tasks", payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -35,7 +41,12 @@ export const updateTaskAPI = async (data: {
 }) => {
   const { formData, token, taskId } = data;
 
-  await apiClient.put(`/tasks/${taskId}`, formData, {
+  const payload = {
+    ...formData,
+    deadline: formData.deadline ? new Date(formData.deadline).toISOString() : null,
+  };
+
+  await apiClient.put(`/tasks/${taskId}`, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
